@@ -18,7 +18,7 @@ var bigPic = {
 		return "add";
   },
   hasClass : function(element, class_name){
-    for(let i = 0; i <![CDATA[ < ]]> element.classList.length; i++){
+    for(let i = 0; i < element.classList.length; i++){
       if(element.classList[i] === class_name){
 			  return true;
 			}
