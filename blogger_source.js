@@ -1,4 +1,4 @@
-var aaa = {
+var bigPic = {
   removeClass : function(element, class_name){
     for(let i = 0; i < element.length; i++){
       element[i].classList.remove(class_name);
