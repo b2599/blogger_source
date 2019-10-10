@@ -1,20 +1,23 @@
 <script>
+    let interval = new Object();
+
     var toggle = {
         slideDown : function(element, height, interval_name, milli_second){
             class_control.addRemove(element, "hidden-item");
             let maxHeight = toggle.getMaxHeight(element, height);
             toggle.makeZeroHeight(element);
+            toggle.makeOverFlowHidden(element);
             let increaseHeight = 2;
             let repeat = maxHeight / increaseHeight;
             let nowHeight = 0;
-            interval_name = setInterval(function(){
+            interval[interval_name] = setInterval(function(){
                 nowHeight += increaseHeight;
                 element.style.height = nowHeight + "px";
-                toggle.clearSlideDown(element, nowHeight, maxHeight, interval_name);
+                toggle.clearSlideDown(element, nowHeight, maxHeight, interval[interval_name]);
             }, milli_second / repeat);
         },
         getHeight : function(element){
-            return element.style.offsetHeight;
+            return element.offsetHeight;
         },
         getMaxHeight : function(element, height){
             if(height && !isNaN(height)){
@@ -47,6 +50,9 @@
         downToggle : function(id_name){
             let scene = document.getElementById(id_name);
             toggle.slideDownAuto(scene, null, id_name, 300);
+        },
+        makeOverFlowHidden : function(element) {
+            element.style.overflow = "hidden";
         }
     }
 </script>
