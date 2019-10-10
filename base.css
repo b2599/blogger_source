@@ -33,5 +33,18 @@
     #content .sub-title{
         font-size: 1.2em;
     }
+    #content table{
+        margin: 2em 0 5em 0;
+        border-collapse:collapse
+    }
+    #content table th{
+        text-align: center;
+    }
+    #content table tr{
+        border-bottom: 0.15em solid #f5b6b6;
+    }
+    #content table td{
+        padding: 0.6em 1.5em 0.1em 0;
+    }
 
 </style>
