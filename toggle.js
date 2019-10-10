@@ -33,6 +33,20 @@
         },
         returnSlideDown : function(element){
             class_control.addRemove(element, "hidden-item");
+        },
+        slideDownAuto : function(element, height, interval_name, milli_second){
+            if(toggle.isOpen(element)){
+                toggle.returnSlideDown(element);
+                return;
+            }
+            toggle.slideDown(element, height, interval_name, milli_second);
+        },
+        isOpen : function(element){
+            return class_control.has(element);
+        },
+        downToggle : function(id_name){
+            let scene = document.getElementById(id_name);
+            toggle.slideDownAuto(scene, null, id_name, 300);
         }
     }
 </script>
