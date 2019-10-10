@@ -1,14 +1,22 @@
 <script>
     var class_control = {
         remove : function(element, class_name){
-            for(let i = 0; i < element.length; i++){
-                element[i].classList.remove(class_name);
+            if(element.length){
+                for(let i = 0; i < element.length; i++){
+                    element[i].classList.remove(class_name);
+                }
+                return "array";
             }
+            element.classList.remove(class_name);
         },
         add : function(element, class_name){
-            for(let i = 0; i < element.length; i++){
-                element[i].classList.add(class_name);
+            if(element.length){
+                for(let i = 0; i < element.length; i++){
+                    element[i].classList.add(class_name);
+                }
+                return "array";
             }
+            element.classList.add(class_name);
         },
         addRemove : function(element, class_name){
             if(class_control.has(element, class_name)){
