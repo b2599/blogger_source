@@ -1,24 +1,24 @@
 <script>
     var class_control = {
-        removeClass : function(element, class_name){
+        remove : function(element, class_name){
             for(let i = 0; i < element.length; i++){
                 element[i].classList.remove(class_name);
             }
         },
-        addClass : function(element, class_name){
+        add : function(element, class_name){
             for(let i = 0; i < element.length; i++){
                 element[i].classList.add(class_name);
             }
         },
-        addOrRemoveClass : function(element, class_name){
-            if(hasClass(element, class_name)){
-                removeClass(element, class_name);
+        addRemove : function(element, class_name){
+            if(class_control.has(element, class_name)){
+                class_control.remove(element, class_name);
                 return "remove";
             }
-            addClass(element, class_name);
+            class_control.add(element, class_name);
             return "add";
         },
-        hasClass : function(element, class_name){
+        has : function(element, class_name){
             for(let i = 0; i < element.classList.length; i++){
                 if(element.classList[i] === class_name){
                     return true;
@@ -26,10 +26,6 @@
             }
 
             return false;
-        },
-        sceneControl : function(scene_number){
-            let sceneContent = document.getElementById(&quot;scene&quot; + scene_number);
-            addOrRemoveClass(sceneContent, &quot;hidden-item&quot;);
         }
     }
 
