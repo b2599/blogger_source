@@ -1,0 +1,55 @@
+<script>
+    var now_script = 0;
+    var max_script = 0;
+
+    var conversation = {
+        createNextButton: function(element){
+            let nextButton = document.createElement("div");
+            nextButton.innerHTML = "▼";
+            nextButton.setAttribute('class', 'next-div');
+            element.appendChild(nextButton);
+        },
+        getText: function(){
+            return document.getElementById("conversation-text").getElementsByTagName("p");
+        },
+        writeNextScript: function(element, scripts){
+            conversation.empty(element);
+
+            if(now_script < max_script){
+                let clone_script = scripts[now_script].cloneNode(true);
+                element.appendChild(clone_script);
+                now_script++;
+            }
+            if(now_script === max_script){
+                now_script = 0;
+            }
+        },
+        activeNextButton: function(click_event_element, write_element){
+            let scripts = conversation.getText();
+            max_script = scripts.length;
+
+            click_event_element.addEventListener("click", function(){
+                conversation.writeNextScript(write_element, scripts);
+            });
+        },
+        init: function (conversation_id, write_script_id) {
+            let conversation_element = document.getElementById(conversation_id);
+            let write_script_element = document.getElementById(write_script_id);
+
+            if(conversation_element){
+                conversation.createNextButton(conversation_element);
+            }
+            if(write_script_element){
+                console.log(write_script_element);
+                conversation.activeNextButton(conversation_element, write_script_element);
+            }
+        },
+        empty: function(element){
+            while(element.hasChildNodes()){
+                element.removeChild(element.firstChild);
+            }
+        },
+    };
+
+    conversation.init("conversation", "write-script");
+</script>
