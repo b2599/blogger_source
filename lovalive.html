@@ -85,3 +85,49 @@
         color: #a1a5a4;
     }
 </style>
+<script>
+    var color = {
+        getContents : function(){
+            return document.getElementById("content").getElementsByTagName("p");
+        },
+        changeNameColor : function(change_text, changed_color_name, elements){
+            for(let i = 0; i < elements.length; i++){
+                let innerHtml = elements[i].innerHTML;
+                let newInnerHtml = innerHtml.replace(change_text + " : ", "<span class='character-name " + changed_color_name + "'>" + change_text + "</span> : ");
+                elements[i].innerHTML = newInnerHtml;
+            }
+        },
+        init : function(){
+            let contents = color.getContents();
+            color.changeNameColor("호노카", "honoka", contents);
+            color.changeNameColor("코토리", "kotori", contents);
+            color.changeNameColor("하나요", "hanayo", contents);
+            color.changeNameColor("노조미", "nozomi", contents);
+            color.changeNameColor("우미", "umi", contents);
+            color.changeNameColor("카린", "karin", contents);
+            color.changeNameColor("에리", "eli", contents);
+            color.changeNameColor("마키", "maki", contents);
+            color.changeNameColor("니코", "niko", contents);
+            color.changeNameColor("치카", "chika", contents);
+            color.changeNameColor("요우", "you", contents);
+            color.changeNameColor("루비", "ruby", contents);
+            color.changeNameColor("카난", "kanan", contents);
+            color.changeNameColor("하나마루", "hanamaru", contents);
+            color.changeNameColor("다이아", "dia", contents);
+            color.changeNameColor("리코", "riko", contents);
+            color.changeNameColor("마리", "mari", contents);
+            color.changeNameColor("요시코", "yoshiko", contents);
+            color.changeNameColor("린", "rin", contents);
+            color.changeNameColor("아이", "ai", contents);
+            color.changeNameColor("아유무", "ayumu", contents);
+            color.changeNameColor("시즈쿠", "shizuku", contents);
+            color.changeNameColor("세츠나", "setsuna", contents);
+            color.changeNameColor("카스미", "kasumi", contents);
+            color.changeNameColor("카나타", "kanata", contents);
+            color.changeNameColor("엠마", "emma", contents);
+            color.changeNameColor("리나", "rina", contents);
+        }
+    };
+
+    color.init();
+</script>
