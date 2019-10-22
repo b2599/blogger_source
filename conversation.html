@@ -97,11 +97,11 @@
         init: function (conversation_id, write_script_id) {
             let conversation_element = document.getElementById(conversation_id);
             let write_script_element = document.getElementById(write_script_id);
+
             if(conversation_element){
                 conversation.createInit(conversation_element);
             }
             if(write_script_element){
-                console.log(write_script_element);
                 conversation.activeNextButton(conversation_element, write_script_element);
             }
         },
