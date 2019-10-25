@@ -3,29 +3,43 @@
         width: 100%;
         border: 0.2em solid #ffb0f2;
         position: relative;
-        min-height: 27em;
+        min-height: 34em;
         margin-bottom: 5em;
+        box-sizing: border-box;
+        cursor: default;
+        user-select: none;
+    }
+    .mobile #content #conversation{
+        min-height: 21em;
+        margin-bottom: 2em;
     }
     #content #conversation #image-box{
         width: 100%;
-        height: 333px;
+        height: 27em;
         overflow: hidden;
         position: relative;
+    }
+    .mobile #content #conversation #image-box{
+        height: 14em;
     }
     #content #conversation #image-box img{
         width: 100%;
         height: auto;
         position: absolute;
-        top: 211px;
-        left: 417px;
+        top: 50%;
+        left: 50%;
         -webkit-transform: translate(-50%,-50%);
         -ms-transform: translate(-50%,-50%);
         transform: translate(-50%,-50%);
     }
     #content #conversation #write-script{
         position: absolute;
-        bottom: 2em;
-        left: 1em;
+        bottom: 0.5em;
+        height: 6em;
+        box-sizing: border-box;
+        width: 100%;
+        padding: 0.2em 2em 0 1em;
+        overflow: auto;
     }
     #content #conversation #write-script p {
         padding: 0 1em 0 0;
@@ -34,7 +48,7 @@
         color: #ffb0f2;
         position: absolute;
         bottom: 0;
-        right: 0.5em;
+        right: 0.8em;
         background: none;
         border: none;
         font-size: 1.4em;
@@ -51,6 +65,11 @@
 <script>
     var now_script = 0;
     var max_script = 0;
+    var conversation_element = document.getElementById("conversation");
+    var write_script_element = document.getElementById("write-script");
+    var scripts = null;
+    var conversationHandler = null;
+    var isSelection = false;
     var conversation = {
         createNextButton: function(){
             let nextButton = document.createElement("div");
@@ -64,52 +83,129 @@
             all_stars_image.setAttribute('id', 'image-box');
             return all_stars_image;
         },
-        createInit: function(element){
+        createInit: function(){
             let next_button = conversation.createNextButton();
             let all_stars_image = conversation.createAllStarsImage();
-            element.appendChild(next_button);
-            element.appendChild(all_stars_image);
+            conversation_element.appendChild(next_button);
+            conversation_element.appendChild(all_stars_image);
         },
-        getText: function(){
-            return document.getElementById("conversation-text").getElementsByTagName("p");
-        },
-        writeNextScript: function(element, scripts){
-            conversation.empty(element);
-            if(now_script < max_script){
-                let clone_script = scripts[now_script].cloneNode(true);
-                if(class_control.has(clone_script, "hidden-item")){
-                    class_control.remove(clone_script, "hidden-item");
-                }
-                element.appendChild(clone_script);
-                now_script++;
+        getText: function(div_id){
+            if(!div_id){
+                return document.getElementById("conversation-text").getElementsByTagName("p");
             }
-            if(now_script === max_script){
-                now_script = 0;
-            }
+            return document.getElementById(div_id).getElementsByTagName("p");
         },
-        activeNextButton: function(click_event_element, write_element){
-            let scripts = conversation.getText();
-            max_script = scripts.length;
-            click_event_element.addEventListener("click", function(){
-                conversation.writeNextScript(write_element, scripts);
-            });
-        },
-        init: function (conversation_id, write_script_id) {
-            let conversation_element = document.getElementById(conversation_id);
-            let write_script_element = document.getElementById(write_script_id);
+        writeNextScript: function(){
+            console.log(scripts);
+            conversation.empty(write_script_element);
 
+            if(conversation.inSelection(scripts[now_script])){
+                conversation.clearEvent(conversation_element);
+                conversation.viewSelection(write_script_element);
+                return;
+            }
+
+            if(!conversation.isScriptEnd()){
+                conversation.viewScript(write_script_element, scripts)
+            }
+            conversation.selectionExit(conversation_element);
+
+            if(conversation.isScriptEnd()){
+                conversation.reStartScript();
+            }
+        },
+        isSelectionEnd: function(){
+            if(conversation.isScriptEnd() && isSelection){
+                return true;
+            }
+            return false;
+        },
+        selectionExit: function(){
+            if(conversation.isSelectionEnd()){
+                conversation.clearEvent(conversation_element);
+                conversation.reStartScript();
+                conversation.initScript();
+                conversation.activeNextButton();
+                isSelection = false;
+            }
+        },
+        viewScript: function(element, scripts){
+            let clone_script = scripts[now_script].cloneNode(true);
+            conversation.scriptDisplayOn(clone_script);
+            element.appendChild(clone_script);
+            now_script++;
+        },
+        inSelection: function(script){
+            if(script.innerHTML.indexOf(':selection:') === -1){
+                return false;
+            }
+            isSelection = true;
+            return true;
+        },
+        scriptDisplayOn: function(script){
+            if(class_control.has(script, "hidden-item")){
+                class_control.remove(script, "hidden-item");
+            }
+        },
+        getSelection: function(){
+            return conversation.getText("selection");
+        },
+        viewSelection: function(element){
+            let selection = conversation.getSelection();
+
+            for(let i = 0; i < selection.length; i++){
+                let clone_script = selection[i].cloneNode(true);
+                conversation.scriptDisplayOn(clone_script);
+                element.appendChild(clone_script);
+            }
+        },
+        changeSelectionScripts: function(scene_id){
+            scripts = conversation.getText(scene_id);
+            max_script = scripts.length;
+        },
+        selectionClick: function(scene_id){
+            conversation.changeSelectionScripts(scene_id);
+            conversation.activeNextButton();
+            conversation.reStartScript();
+            conversation_element.click();
+        },
+        isScriptEnd: function(){
+            if(now_script === max_script){
+                return true;
+            }
+            return false;
+        },
+        reStartScript: function(){
+            now_script = 0;
+        },
+        initScript: function(){
+            scripts = conversation.getText();
+            max_script = scripts.length;
+        },
+        activeNextButton: function(){
+            conversationHandler = function(){
+                conversation.writeNextScript();
+            };
+
+            conversation_element.addEventListener("click", conversationHandler, true);
+        },
+        clearEvent: function(element){
+            element.removeEventListener("click", conversationHandler, true);
+        },
+        init: function () {
             if(conversation_element){
-                conversation.createInit(conversation_element);
+                conversation.createInit();
             }
             if(write_script_element){
-                conversation.activeNextButton(conversation_element, write_script_element);
+                conversation.initScript();
+                conversation.activeNextButton();
             }
         },
         empty: function(element){
             while(element.hasChildNodes()){
                 element.removeChild(element.firstChild);
             }
-        },
+        }
     };
-    conversation.init("conversation", "write-script");
+    conversation.init();
 </script>

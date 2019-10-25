@@ -1,136 +1,136 @@
 <style>
-  .character-name{
-    font-weight: 600;
-  }
-  .honoka{
-    color: #ffa500;
-  }
-  .kotori{
-    color: #808080;
-  }
-  .hanayo{
-    color: #008000;
-  }
-  .nozomi{
-    color: #800080;
-  }
-  .umi{
-    color: #0000ff;
-  }
-  .rin{
-    color: #ffd700;
-  }
-  .eli{
-    color: #87ceeb;
-  }
-  .maki{
-    color: #ff0000;
-  }
-  .niko{
-    color: #ff69b4;
-  }
-  .chika{
-    color: #ffb400;
-  }
-  .you{
-    color: #87ceeb;
-  }
-  .ruby{
-    color: #ff1493;
-  }
-  .kanan{
-    color: #40e0d0;
-  }
-  .hanamaru{
-    color: #ffd700;
-  }
-  .dia{
-    color: #ff0000;
-  }
-  .riko{
-    color: #ffb7c5;
-  }
-  .mari{
-    color: #800080;
-  }
-  .yoshiko{
-    color: #808080;
-  }
-  .karin{
-    color: #000080;
-  }
-  .ai{
-    color: #ffa359;
-  }
-  .ayumu{
-    color: #ffb6c1;
-  }
-  .shizuku{
-    color: #add8e6;
-  }
-  .setsuna{
-    color: #f76865;
-  }
-  .kasumi{
-    color: #fdfd96;
-  }
-  .kanata{
-    color: #d5ace7;
-  }
-  .emma{
-    color: #adec92;
-  }
-  .rina{
-    color: #a1a5a4;
-  }
+    .character-name{
+        font-weight: 600;
+    }
+    .honoka{
+        color: #ffa500;
+    }
+    .kotori{
+        color: #808080;
+    }
+    .hanayo{
+        color: #008000;
+    }
+    .nozomi{
+        color: #800080;
+    }
+    .umi{
+        color: #0000ff;
+    }
+    .rin{
+        color: #ffd700;
+    }
+    .eli{
+        color: #87ceeb;
+    }
+    .maki{
+        color: #ff0000;
+    }
+    .niko{
+        color: #ff69b4;
+    }
+    .chika{
+        color: #ffb400;
+    }
+    .you{
+        color: #87ceeb;
+    }
+    .ruby{
+        color: #ff1493;
+    }
+    .kanan{
+        color: #40e0d0;
+    }
+    .hanamaru{
+        color: #ffd700;
+    }
+    .dia{
+        color: #ff0000;
+    }
+    .riko{
+        color: #ffb7c5;
+    }
+    .mari{
+        color: #800080;
+    }
+    .yoshiko{
+        color: #808080;
+    }
+    .karin{
+        color: #000080;
+    }
+    .ai{
+        color: #ffa359;
+    }
+    .ayumu{
+        color: #ffb6c1;
+    }
+    .shizuku{
+        color: #add8e6;
+    }
+    .setsuna{
+        color: #f76865;
+    }
+    .kasumi{
+        color: #fdfd96;
+    }
+    .kanata{
+        color: #d5ace7;
+    }
+    .emma{
+        color: #adec92;
+    }
+    .rina{
+        color: #a1a5a4;
+    }
 </style>
 <script>
-  var color = {
-    getContents : function(){
-      return document.getElementById("content").getElementsByTagName("p");
-    },
-    changeNameColor : function(change_text, changed_color_name, elements){
-      for(let i = 0; i < elements.length; i++){
-        let innerHtml = elements[i].innerHTML;
-        let middleInnerHtml = innerHtml.replace(":" + change_text + "&", "<span class='" + changed_color_name + "'>" + change_text + "</span>&");
-        let newInnerHtml = middleInnerHtml.replace(":" + change_text, "<span class='" + changed_color_name + "'>" + change_text + "</span> : ");
-        elements[i].innerHTML = newInnerHtml;
-      }
-    },
-    init : function(){
-      let contents = color.getContents();
-      color.changeNameColor("나", "", contents);
-      color.changeNameColor("모두", "character-name", contents);
-      color.changeNameColor("???", "character-name", contents);
-      color.changeNameColor("호노카", "character-name honoka", contents);
-      color.changeNameColor("코토리", "character-name kotori", contents);
-      color.changeNameColor("하나요", "character-name hanayo", contents);
-      color.changeNameColor("노조미", "character-name nozomi", contents);
-      color.changeNameColor("우미", "character-name umi", contents);
-      color.changeNameColor("카린", "character-name karin", contents);
-      color.changeNameColor("에리", "character-name eli", contents);
-      color.changeNameColor("마키", "character-name maki", contents);
-      color.changeNameColor("니코", "character-name niko", contents);
-      color.changeNameColor("치카", "character-name chika", contents);
-      color.changeNameColor("요우", "character-name you", contents);
-      color.changeNameColor("루비", "character-name ruby", contents);
-      color.changeNameColor("카난", "character-name kanan", contents);
-      color.changeNameColor("하나마루", "character-name hanamaru", contents);
-      color.changeNameColor("다이아", "character-name dia", contents);
-      color.changeNameColor("리코", "character-name riko", contents);
-      color.changeNameColor("마리", "character-name mari", contents);
-      color.changeNameColor("요시코", "character-name yoshiko", contents);
-      color.changeNameColor("린", "character-name rin", contents);
-      color.changeNameColor("아이", "character-name ai", contents);
-      color.changeNameColor("아유무", "character-name ayumu", contents);
-      color.changeNameColor("시즈쿠", "character-name shizuku", contents);
-      color.changeNameColor("세츠나", "character-name setsuna", contents);
-      color.changeNameColor("카스미", "character-name kasumi", contents);
-      color.changeNameColor("카나타", "character-name kanata", contents);
-      color.changeNameColor("엠마", "character-name emma", contents);
-      color.changeNameColor("리나", "character-name rina", contents);
-    }
-  };
+    var color = {
+        getContents : function(){
+            return document.getElementById("content").getElementsByTagName("p");
+        },
+        changeNameColor : function(change_text, changed_color_name, elements){
+            for(let i = 0; i < elements.length; i++){
+                let innerHtml = elements[i].innerHTML;
+                let middleInnerHtml = innerHtml.replace(":" + change_text + "&", "<span class='" + changed_color_name + "'>" + change_text + "</span>&");
+                let newInnerHtml = middleInnerHtml.replace(":" + change_text, "<span class='" + changed_color_name + "'>" + change_text + "</span> : ");
+                elements[i].innerHTML = newInnerHtml;
+            }
+        },
+        init : function(){
+            let contents = color.getContents();
+            color.changeNameColor("나", "", contents);
+            color.changeNameColor("모두", "character-name", contents);
+            color.changeNameColor("???", "character-name", contents);
+            color.changeNameColor("호노카", "character-name honoka", contents);
+            color.changeNameColor("코토리", "character-name kotori", contents);
+            color.changeNameColor("하나요", "character-name hanayo", contents);
+            color.changeNameColor("노조미", "character-name nozomi", contents);
+            color.changeNameColor("우미", "character-name umi", contents);
+            color.changeNameColor("카린", "character-name karin", contents);
+            color.changeNameColor("에리", "character-name eli", contents);
+            color.changeNameColor("마키", "character-name maki", contents);
+            color.changeNameColor("니코", "character-name niko", contents);
+            color.changeNameColor("치카", "character-name chika", contents);
+            color.changeNameColor("요우", "character-name you", contents);
+            color.changeNameColor("루비", "character-name ruby", contents);
+            color.changeNameColor("카난", "character-name kanan", contents);
+            color.changeNameColor("하나마루", "character-name hanamaru", contents);
+            color.changeNameColor("다이아", "character-name dia", contents);
+            color.changeNameColor("리코", "character-name riko", contents);
+            color.changeNameColor("마리", "character-name mari", contents);
+            color.changeNameColor("요시코", "character-name yoshiko", contents);
+            color.changeNameColor("린", "character-name rin", contents);
+            color.changeNameColor("아이", "character-name ai", contents);
+            color.changeNameColor("아유무", "character-name ayumu", contents);
+            color.changeNameColor("시즈쿠", "character-name shizuku", contents);
+            color.changeNameColor("세츠나", "character-name setsuna", contents);
+            color.changeNameColor("카스미", "character-name kasumi", contents);
+            color.changeNameColor("카나타", "character-name kanata", contents);
+            color.changeNameColor("엠마", "character-name emma", contents);
+            color.changeNameColor("리나", "character-name rina", contents);
+        }
+    };
 
-  color.init();
+    color.init();
 </script>
