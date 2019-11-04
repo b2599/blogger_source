@@ -61,6 +61,29 @@
         50% { transform: rotateY(88deg) }
         100% { transform: rotateY(166deg); }
     }
+    #content #conversation #control-panel{
+        width: 100%;
+        border: 0.2em solid #ffb0f2;
+        position: absolute;
+        top: 33.5em;
+        left: -3px;
+        display: none;
+        height: 2em;
+        border-bottom: none;
+    }
+    #content #conversation #control-panel .control-button{
+        width: 3em;
+        margin: 0.5em;
+        background-color: #ffffff;
+        border: 0.1em solid #fd50e0;
+        color: #ffb0f2;
+        cursor: pointer;
+    }
+    #content #conversation #control-panel .control-button:hover,
+    #content #conversation #control-panel .control-button.active{
+        background-color: #ffb0f2;
+        color: #ffffff;
+    }
 </style>
 <script>
     var now_script = 0;
@@ -68,8 +91,11 @@
     var conversation_element = document.getElementById("conversation");
     var write_script_element = document.getElementById("write-script");
     var scripts = null;
-    var conversationHandler = null;
-    var isSelection = false;
+    var conversation_handler = null;
+    var is_selection = false;
+    var auto_script = null;
+    var is_complete_script = false;
+    var is_first_click = true;
     var conversation = {
         createNextButton: function(){
             let nextButton = document.createElement("div");
@@ -83,11 +109,37 @@
             all_stars_image.setAttribute('id', 'image-box');
             return all_stars_image;
         },
+        createControlPanel: function(){
+            let controlPanel = document.createElement("div");
+            controlPanel.setAttribute('id', 'control-panel');
+
+            conversation.addItemInControlPanel(controlPanel);
+
+            return controlPanel;
+        },
+        createAutoButton: function(){
+            let autoButton = document.createElement("button");
+            autoButton.innerHTML = "▶";
+            autoButton.setAttribute('class', 'control-button');
+            autoButton.setAttribute('id', 'auto-button');
+
+            autoButton.addEventListener("click", function() {
+                conversation.autoScriptStart();
+            });
+
+            return autoButton;
+        },
+        addItemInControlPanel: function(control_panel){
+            let autoButton = conversation.createAutoButton();
+            control_panel.appendChild(autoButton);
+        },
         createInit: function(){
             let next_button = conversation.createNextButton();
             let all_stars_image = conversation.createAllStarsImage();
+            let control_panel = conversation.createControlPanel();
             conversation_element.appendChild(next_button);
             conversation_element.appendChild(all_stars_image);
+            conversation_element.appendChild(control_panel);
         },
         getText: function(div_id){
             if(!div_id){
@@ -96,29 +148,34 @@
             return document.getElementById(div_id).getElementsByTagName("p");
         },
         writeNextScript: function(){
-            console.log(scripts);
+            conversation.changeCompleteScript();
             conversation.empty(write_script_element);
 
-            if(conversation.inSelection(scripts[now_script])){
-                conversation.clearEvent(conversation_element);
-                conversation.viewSelection(write_script_element);
-                return;
-            }
-
-            if(!conversation.isScriptEnd()){
-                conversation.viewScript(write_script_element, scripts)
-            }
             conversation.selectionExit(conversation_element);
 
             if(conversation.isScriptEnd()){
                 conversation.reStartScript();
             }
+
+            if(is_complete_script){
+                if(conversation.inSelection()){
+                    conversation.clearEvent(conversation_element);
+                    conversation.viewSelection(write_script_element);
+                    return;
+                }
+                conversation.viewNextScript();
+                conversation.controlFirstClickFlg();
+                return;
+            }
+
+            conversation.viewCompleteScript();
+
+            if(auto_script !== null){
+                return;
+            }
         },
         isSelectionEnd: function(){
-            if(conversation.isScriptEnd() && isSelection){
-                return true;
-            }
-            return false;
+            return conversation.isScriptEnd() && is_selection;
         },
         selectionExit: function(){
             if(conversation.isSelectionEnd()){
@@ -126,20 +183,37 @@
                 conversation.reStartScript();
                 conversation.initScript();
                 conversation.activeNextButton();
-                isSelection = false;
+                is_selection = false;
             }
         },
-        viewScript: function(element, scripts){
+        viewNextScript: function(){
+            if(!is_first_click){
+                now_script++;
+            }
+            console.log(now_script);
             let clone_script = scripts[now_script].cloneNode(true);
             conversation.scriptDisplayOn(clone_script);
-            element.appendChild(clone_script);
-            now_script++;
+            let scriptString = conversation.getScriptString(clone_script);
+            clone_script.innerHTML = "";
+            write_script_element.appendChild(clone_script);
+            conversation.typingStart(clone_script, scriptString);
         },
-        inSelection: function(script){
-            if(script.innerHTML.indexOf(':selection:') === -1){
+        viewCompleteScript: function(){
+            let clone_script = scripts[now_script].cloneNode(true);
+            conversation.scriptDisplayOn(clone_script);
+            write_script_element.appendChild(clone_script);
+            is_complete_script = true;
+        },
+        inSelection: function(){
+            let is_selection_script_number = now_script;
+            if(!is_first_click){
+                is_selection_script_number++;
+            }
+
+            if(scripts[is_selection_script_number].innerHTML.indexOf(':selection:') === -1){
                 return false;
             }
-            isSelection = true;
+            is_selection = true;
             return true;
         },
         scriptDisplayOn: function(script){
@@ -161,7 +235,7 @@
         },
         changeSelectionScripts: function(scene_id){
             scripts = conversation.getText(scene_id);
-            max_script = scripts.length;
+            max_script = scripts.length - 1;
         },
         selectionClick: function(scene_id){
             conversation.changeSelectionScripts(scene_id);
@@ -170,33 +244,29 @@
             conversation_element.click();
         },
         isScriptEnd: function(){
-            if(now_script === max_script){
-                return true;
-            }
-            return false;
+            return now_script === max_script && is_complete_script;
         },
         reStartScript: function(){
             now_script = 0;
+            is_first_click = true;
         },
         initScript: function(){
             scripts = conversation.getText();
-            max_script = scripts.length;
+            max_script = scripts.length - 1;
         },
         activeNextButton: function(){
-            conversationHandler = function(){
+            conversation_handler = function(){
                 conversation.writeNextScript();
             };
 
-            conversation_element.addEventListener("click", conversationHandler, true);
+            conversation_element.addEventListener("click", conversation_handler, true);
         },
         clearEvent: function(element){
-            element.removeEventListener("click", conversationHandler, true);
+            element.removeEventListener("click", conversation_handler, true);
         },
         init: function () {
-            if(conversation_element){
+            if(conversation_element && write_script_element){
                 conversation.createInit();
-            }
-            if(write_script_element){
                 conversation.initScript();
                 conversation.activeNextButton();
             }
@@ -204,6 +274,59 @@
         empty: function(element){
             while(element.hasChildNodes()){
                 element.removeChild(element.firstChild);
+            }
+        },
+        autoScriptStart: function(){
+            if(!auto_script){
+                auto_script = setInterval(function() {
+                    conversation.empty(write_script_element);
+                    conversation.viewScript(write_script_element, scripts);
+
+                    if(conversation.isScriptEnd()){
+                        conversation.reStartScript();
+                        conversation.clearAutoScript();
+                    }
+                }, 1000);
+            }
+        },
+        clearAutoScript: function(){
+            clearInterval(auto_script);
+            auto_script = null;
+        },
+        getScriptString: function(script){
+            return script.innerHTML;
+        },
+        typingStart: function(element, scriptString){
+            let cut_script_string = scriptString.split(":");
+            let character_name = cut_script_string[0] + ":";
+            let textCount = character_name.length;
+            let typing = setInterval(function(){
+                if(textCount === scriptString.length){
+                    is_complete_script = true;
+                    clearInterval(typing);
+                }
+
+                element.innerHTML = scriptString.substring(0, textCount);
+                textCount++;
+            }, 50);
+        },
+        changeCompleteScript: function(){
+            is_complete_script = conversation.isNowWaitSameScript() || is_first_click;
+        },
+        controlFirstClickFlg: function(){
+            if(is_first_click){
+                is_first_click = false;
+            }
+        },
+        isNowWaitSameScript: function(){
+            let now_text = write_script_element.getElementsByTagName("p")[0].innerText.replace(/\s/gi, "");
+            let wait_text = scripts[now_script].innerText.replace(/\s/gi, "");
+
+            return now_text === wait_text;
+        },
+        nowScriptPlus: function(){
+            if(!is_first_click){
+                now_script++;
             }
         }
     };
